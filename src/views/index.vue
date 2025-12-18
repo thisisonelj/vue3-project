@@ -207,7 +207,7 @@
   }
   // 测试nest服务api接口
   const testNestApiInfo = async () => {
-    const res = await testMicroServiceInfo({ data: { num: '123,456,789' } });
+    const res = await queryAllRecords({});
     console.log(res);
   };
   onMounted(() => {
