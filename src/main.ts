@@ -1,20 +1,23 @@
-import './assets/main.css'
+import './assets/main.css';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import store from '@/stores/index'
-import { setGlobalDirectives } from '@/directives/index'
-import { setupI18n } from '@/plugins/locale/index'
-const app = createApp(App)
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import store from '@/stores/index';
+import { setGlobalDirectives } from '@/directives/index';
+import { setupI18n } from '@/plugins/locale/index';
+import 'virtual:svg-icons-register';
+import SvgIcon from '@/components/common/svg/index';
+const app = createApp(App);
 //注册全局store
-app.use(store)
-app.use(router)
-app.use(ElementPlus)
+app.component('svg-icon', SvgIcon);
+app.use(store);
+app.use(router);
+app.use(ElementPlus);
 //注册全局自定义指令
-setGlobalDirectives(app)
+setGlobalDirectives(app);
 //注册插件i18n国际化
-setupI18n(app)
-app.mount('#app')
+setupI18n(app);
+app.mount('#app');

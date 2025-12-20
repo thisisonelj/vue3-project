@@ -7,6 +7,7 @@
       <right-table class="right-table" :table-data="tableData" @edit-change="editChange" @delete-change="deleteChange"></right-table>
     </div>
     <common-footer @pagesize-change="pageSizeChange" @currentpage-change="currentpageChange" ref="pagation"></common-footer>
+    <svg-icon :name="'test'" class="svg-test"></svg-icon>
   </div>
 </template>
 <script setup lang="ts">
@@ -223,6 +224,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    color: $btnBg;
     .center {
       flex: 1;
       overflow: hidden;
@@ -237,6 +239,11 @@
       .right-table {
         flex: 3;
       }
+    }
+    .svg-test {
+      margin: auto;
+      width: 200px;
+      height: 200px;
     }
   }
 </style>

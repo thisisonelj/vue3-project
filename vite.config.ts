@@ -5,25 +5,44 @@ import vue from '@vitejs/plugin-vue';
 import { dirname } from 'path';
 import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import ConditionalCompile from 'vite-plugin-conditional-compiler';
 export default ({ command, mode }) => {
   console.log('环境变量 =>', command, mode);
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'));
   console.log(env);
+  console.log(process.env);
   const _filename = fileURLToPath(import.meta.url);
   const _dirName = dirname(_filename);
   const entryFile = path.join(_dirName, '/src/main.ts');
-  console.log(_dirName);
   return defineConfig({
-    envDir: './env', // 自定义env目录
-    plugins: [vue()],
+    envDir: path.resolve(_dirName, 'env'), // 自定义env目录
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
-      extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', 'vue'],
+      extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    },
+    plugins: [
+      vue(),
+      createSvgIconsPlugin({
+        iconDirs: [path.resolve(_dirName, 'src/assets/svg')],
+        // 指定symbolId格式
+        symbolId: 'icon-[name]',
+      }),
+      ConditionalCompile(),
+    ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          //  全局变量
+          additionalData: '@use "@/assets/global-variables.scss" as *;',
+        },
+      },
     },
     define: {
       __VITE_APP_PROXY__: true || false,
+      'process.env': {},
     },
     server: {
       host: '0.0.0.0',
@@ -39,6 +58,12 @@ export default ({ command, mode }) => {
     },
     build: {
       target: 'es2015',
+      terserOptions: {
+        compress: {
+          keep_infinity: true,
+          drop_debugger: true,
+        },
+      },
       rollupOptions: {
         external: ['vue', 'vue-router', 'axios'],
         input: entryFile,
