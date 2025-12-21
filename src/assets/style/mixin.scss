@@ -1,0 +1,13 @@
+// 判断设备类型   mobile、PC
+
+@mixin mediaMob {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mediaPC {
+  @media screen and (max-width: 1920px) and (min-width: 1200px) {
+    @content;
+  }
+}

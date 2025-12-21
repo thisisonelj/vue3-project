@@ -13,6 +13,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import externalGlobals from 'rollup-plugin-external-globals';
 import autoprefixer from 'autoprefixer';
 import compressionPlugins from 'vite-plugin-compression';
+import pxToVw from 'postcss-px-to-viewport';
+import pxToRem from 'postcss-pxtorem';
 export default ({ command, mode }) => {
   console.log('环境变量 =>', command, mode);
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'));
@@ -62,7 +64,31 @@ export default ({ command, mode }) => {
     css: {
       // 自动引入css前缀
       postcss: {
-        plugins: [autoprefixer()],
+        plugins: [
+          autoprefixer(),
+          // 全局vw响应式适配
+          // pxToVw({
+          //   viewportWidth: 1920, // 设计稿的视口宽度
+          //   propList: ['*'],
+          //   viewportUnit: 'vw', // 希望使用的视口单位
+          //   fontViewportUnit: 'vw', // 字体使用的视口单位
+          //   // 下面配置表示类名中含有'keep-px'都不会被转换
+          //   selectorBlackList: ['keep-px-vw'],
+          //   mediaQuery: false, // 媒体查询里的单位是否需要转换单位
+          //   replace: true, //  是否直接更换属性值，而不添加备用属性
+          // }),
+          // // 全局rem响应式适配
+          // pxToRem({
+          //   rootValue: 16, // rem 相对于 px 转换的基准值
+          //   propList: ['*'], // 需要转换的 CSS 属性，* 表示全部
+          //   unitPrecision: 5, // 转换后的小数位数
+          //   // 下面配置表示类名中含有'keep-px'都不会被转换
+          //   selectorBlackList: ['keep-px-rem'],
+          //   mediaQuery: false, // 媒体查询里的单位是否需要转换单位
+          //   replace: true, //  是否直接更换属性值，而不添加备用属性
+          //   minPixelValue: 0,
+          // }),
+        ],
       },
       preprocessorOptions: {
         scss: {

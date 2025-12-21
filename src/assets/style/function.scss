@@ -1,0 +1,4 @@
+// 根据设计稿设置转换比例函数
+@function pxTovw($px, $display) {
+  @return calc($px / $display) * 100vw;
+}
