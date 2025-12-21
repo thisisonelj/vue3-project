@@ -7,14 +7,22 @@ import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import ConditionalCompile from 'vite-plugin-conditional-compiler';
+import AutoImport from 'unplugin-auto-import/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import commonjs from '@rollup/plugin-commonjs';
+import externalGlobals from 'rollup-plugin-external-globals';
+import autoprefixer from 'autoprefixer';
 export default ({ command, mode }) => {
   console.log('环境变量 =>', command, mode);
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'));
-  console.log(env);
-  console.log(process.env);
   const _filename = fileURLToPath(import.meta.url);
   const _dirName = dirname(_filename);
   const entryFile = path.join(_dirName, '/src/main.ts');
+  // 打包后引入全局变量 针对排除打包的三方依赖
+  const globals = externalGlobals({
+    vue: 'Vue',
+    axios: 'axios',
+  });
   return defineConfig({
     envDir: path.resolve(_dirName, 'env'), // 自定义env目录
     resolve: {
@@ -31,8 +39,19 @@ export default ({ command, mode }) => {
         symbolId: 'icon-[name]',
       }),
       ConditionalCompile(),
+      AutoImport({
+        imports: ['vue'],
+        resolvers: [ElementPlusResolver()],
+      }),
+      commonjs({
+        include: '/node_modules/',
+      }),
     ],
     css: {
+      // 自动引入css前缀
+      postcss: {
+        plugins: [autoprefixer()],
+      },
       preprocessorOptions: {
         scss: {
           //  全局变量
@@ -64,19 +83,15 @@ export default ({ command, mode }) => {
           drop_debugger: true,
         },
       },
+      cssCodeSplit: true,
+      emptyOutDir: true,
       rollupOptions: {
-        external: ['vue', 'vue-router', 'axios'],
+        external: ['vue', 'axios'],
         input: entryFile,
-        plugins: [resolve()],
+        plugins: [resolve(), mode === 'production' ? [globals] : [], terser],
         output: {
           name: 'liu-bundle',
           format: 'es',
-          globals: {
-            vue: 'Vue',
-            'vue-router': 'VueRouter',
-            axios: 'axios',
-          },
-          plugins: [terser],
           manualChunks: {
             'element-plus': ['element-plus'],
           },
