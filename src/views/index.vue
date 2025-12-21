@@ -8,6 +8,7 @@
     </div>
     <common-footer @pagesize-change="pageSizeChange" @currentpage-change="currentpageChange" ref="pagation"></common-footer>
     <svg-icon :name="'test'" class="svg-test"></svg-icon>
+    <img :src="imageUrl" style="height: 200px; width: 200px" />
   </div>
 </template>
 <script setup lang="ts">
@@ -36,6 +37,8 @@
     testDeepSeekApiInfo,
     testMicroServiceInfo,
   } from '@/api/goodsApi';
+  import personUrl from '@/assets/image/person.jpg';
+  const imageUrl = new URL(personUrl, import.meta.url).href;
   interface btnPowerTemplate {
     code: String;
     label: String;
@@ -213,7 +216,7 @@
   };
   onMounted(() => {
     // 测试jenkins Pr合并通知
-    alert(`docker---jenkins--nginx--github--linux 一体化前端部署服务器cicd构建完成 YYDS`);
+    // alert(`docker---jenkins--nginx--github--linux 一体化前端部署服务器cicd构建完成 YYDS`);
     // initCurrentPage();
     // initBtnPower();
     testNestApiInfo();

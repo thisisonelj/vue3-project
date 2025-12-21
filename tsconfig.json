@@ -16,44 +16,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "types": [],
-    "typeRoots": [
-      "./node_modules/@types/",
-      "./types",
-      "./node_modules",
-      "./src/typings.d.ts",
-    ],
+    "typeRoots": ["./node_modules/@types/", "./types", "./node_modules", "./src/typings.d.ts"],
     "noImplicitAny": false,
     "skipLibCheck": true,
     "paths": {
-      "/@/*": [
-        "src/*"
-      ],
-      "/#/*": [
-        "types/*"
-      ],
-      "@/*": [
-        "src/*"
-      ],
-      "#/*": [
-        "types/*"
-      ]
+      "/@/*": ["src/*"],
+      "/#/*": ["types/*"],
+      "@/*": ["src/*"],
+      "#/*": ["types/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "vite.config.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.js"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", "**/*.js"]
 }

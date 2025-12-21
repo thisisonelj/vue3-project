@@ -12,17 +12,29 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import commonjs from '@rollup/plugin-commonjs';
 import externalGlobals from 'rollup-plugin-external-globals';
 import autoprefixer from 'autoprefixer';
+import compressionPlugins from 'vite-plugin-compression';
 export default ({ command, mode }) => {
   console.log('环境变量 =>', command, mode);
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'));
   const _filename = fileURLToPath(import.meta.url);
   const _dirName = dirname(_filename);
-  const entryFile = path.join(_dirName, '/src/main.ts');
+  const entryFile = path.join(_dirName, '/index.html');
   // 打包后引入全局变量 针对排除打包的三方依赖
   const globals = externalGlobals({
     vue: 'Vue',
     axios: 'axios',
+    '@vueuse/core': 'VueUse',
   });
+  const externalGlobalsInfo = mode === 'production' ? [globals] : [];
+  const compressions = compressionPlugins({
+    verbose: true,
+    disable: false,
+    deleteOriginFile: false,
+    threshold: 10240,
+    algorithm: 'gzip',
+    ext: '.gz',
+  });
+  const compressionsInfo = mode === 'production' ? [compressions] : [];
   return defineConfig({
     envDir: path.resolve(_dirName, 'env'), // 自定义env目录
     resolve: {
@@ -88,21 +100,30 @@ export default ({ command, mode }) => {
       rollupOptions: {
         external: ['vue', 'axios'],
         input: entryFile,
-        plugins: [resolve(), mode === 'production' ? [globals] : [], terser],
+        plugins: [resolve(), terser, externalGlobalsInfo, compressionsInfo],
         output: {
           name: 'liu-bundle',
           format: 'es',
           manualChunks: {
             'element-plus': ['element-plus'],
           },
+          // 对打包后的文件 自定义目录、路径
           assetFileNames: (assetInfo) => {
-            return 'assets/[name]-[hash][extname]';
+            let assetFile = 'static/[ext]/[name].[ext]';
+            const fileNames = assetInfo.names;
+            for (const element of fileNames) {
+              if (element.endsWith('.css')) {
+                assetFile = `lj-css/[name].[ext]`;
+                break;
+              }
+            }
+            return assetFile;
           },
           chunkFileNames: (chunkInfo) => {
-            return '[name]-[hash].js';
+            return 'lj-common-js/[name].js';
           },
           entryFileNames: (chunkInfo) => {
-            return '[name].js';
+            return 'lj-default-js/[name].js';
           },
         },
       },

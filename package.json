@@ -53,6 +53,7 @@
     "unplugin-auto-import": "^20.3.0",
     "unplugin-vue-components": "^30.0.0",
     "vite": "^6.2.4",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-conditional-compiler": "^0.4.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-devtools": "^7.7.2",

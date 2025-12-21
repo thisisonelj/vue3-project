@@ -9,7 +9,7 @@ import store from '@/stores/index';
 import { setGlobalDirectives } from '@/directives/index';
 import { setupI18n } from '@/plugins/locale/index';
 import 'virtual:svg-icons-register';
-import SvgIcon from '@/components/common/svg/index';
+import SvgIcon from '@/components/common/svg/index.vue';
 const app = createApp(App);
 //注册全局store
 app.component('svg-icon', SvgIcon);
