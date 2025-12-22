@@ -15,6 +15,9 @@ import autoprefixer from 'autoprefixer';
 import compressionPlugins from 'vite-plugin-compression';
 import pxToVw from 'postcss-px-to-viewport';
 import pxToRem from 'postcss-pxtorem';
+import myVitePlugin from './src/plugins/vite/index';
+import { vitePluginSummary } from './src/plugins/vite/computeCodeLines';
+import { viteJSONTOJS } from './src/plugins/vite/jsonToJS';
 export default ({ command, mode }) => {
   console.log('环境变量 =>', command, mode);
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'));
@@ -60,6 +63,9 @@ export default ({ command, mode }) => {
       commonjs({
         include: '/node_modules/',
       }),
+      // myVitePlugin(),
+      // vitePluginSummary(),
+      viteJSONTOJS(),
     ],
     css: {
       // 自动引入css前缀

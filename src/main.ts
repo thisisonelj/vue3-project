@@ -11,6 +11,8 @@ import { setupI18n } from '@/plugins/locale/index';
 import 'virtual:svg-icons-register';
 import SvgIcon from '@/components/common/svg/index.vue';
 import '@/utils/global';
+import '@/plugins/test/test-lj';
+import '@/plugins/test/test-lj.json';
 const app = createApp(App);
 //注册全局store
 app.component('svg-icon', SvgIcon);
