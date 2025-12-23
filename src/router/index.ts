@@ -10,6 +10,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'pageContainer',
+      alias: '/src/index.html',
       component: pageContainer,
     },
     {

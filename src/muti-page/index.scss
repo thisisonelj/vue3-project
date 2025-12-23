@@ -1,0 +1,29 @@
+#app {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .display-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

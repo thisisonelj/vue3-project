@@ -13,6 +13,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import externalGlobals from 'rollup-plugin-external-globals';
 import autoprefixer from 'autoprefixer';
 import compressionPlugins from 'vite-plugin-compression';
+import fs from 'fs';
 import pxToVw from 'postcss-px-to-viewport';
 import pxToRem from 'postcss-pxtorem';
 import myVitePlugin from './src/plugins/vite/index';
@@ -40,11 +41,51 @@ export default ({ command, mode }) => {
     ext: '.gz',
   });
   const compressionsInfo = mode === 'production' ? [compressions] : [];
+  // 多页面
+  const buildEntry = {
+    main: path.resolve(_dirName, 'index.html'),
+  };
+  const trasferDirPath = path.resolve(_dirName, 'src');
+  // 遍历目录  组合多页面入口文件
+  const searchEntryInfo = (entryPath) => {
+    const results: Array<Object> = [];
+    const readDir = (currentPath) => {
+      const currentDir = fs.readdirSync(currentPath);
+      for (const item of currentDir) {
+        const fullPath = path.join(currentPath, item);
+        const stats = fs.statSync(fullPath);
+        if (stats.isDirectory()) {
+          readDir(fullPath);
+        } else {
+          if (stats.isFile()) {
+            if (item.endsWith('.html')) {
+              results.push({
+                path: fullPath,
+                name: item,
+                parentDir: path.dirname(fullPath).slice(path.dirname(fullPath).lastIndexOf('\\') + 1),
+              });
+            }
+          }
+        }
+      }
+    };
+    readDir(entryPath);
+    return results;
+  };
+  const mutiPage = searchEntryInfo(trasferDirPath);
+  const mutiPageArr = {};
+  mutiPage.forEach((e: any) => {
+    mutiPageArr[e.parentDir] = e.path;
+  });
+  Object.assign(buildEntry, mutiPageArr);
+  // 生成多页面入口文件
+  // console.log(buildEntry);
   return defineConfig({
     envDir: path.resolve(_dirName, 'env'), // 自定义env目录
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
+        vue: 'vue/dist/vue.esm-bundler.js',
       },
       extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
@@ -131,7 +172,8 @@ export default ({ command, mode }) => {
       emptyOutDir: true,
       rollupOptions: {
         external: ['vue', 'axios'],
-        input: entryFile,
+        // input: entryFile,
+        input: buildEntry,
         plugins: [resolve(), terser, externalGlobalsInfo, compressionsInfo],
         output: {
           name: 'liu-bundle',
