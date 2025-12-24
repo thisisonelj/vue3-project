@@ -10,7 +10,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'pageContainer',
-      alias: '/src/index.html',
+      alias: '/muti-page/two/index.html',
       component: pageContainer,
     },
     {

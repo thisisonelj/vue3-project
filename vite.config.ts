@@ -45,14 +45,14 @@ export default ({ command, mode }) => {
   const buildEntry = {
     main: path.resolve(_dirName, 'index.html'),
   };
-  const trasferDirPath = path.resolve(_dirName, 'src');
+  const trasferDirPath = path.resolve(_dirName, 'muti-page');
   // 遍历目录  组合多页面入口文件
   const searchEntryInfo = (entryPath) => {
     const results: Array<Object> = [];
     const readDir = (currentPath) => {
       const currentDir = fs.readdirSync(currentPath);
       for (const item of currentDir) {
-        const fullPath = path.join(currentPath, item);
+        let fullPath = path.join(currentPath, item);
         const stats = fs.statSync(fullPath);
         if (stats.isDirectory()) {
           readDir(fullPath);
@@ -79,7 +79,7 @@ export default ({ command, mode }) => {
   });
   Object.assign(buildEntry, mutiPageArr);
   // 生成多页面入口文件
-  // console.log(buildEntry);
+  console.log(buildEntry);
   return defineConfig({
     envDir: path.resolve(_dirName, 'env'), // 自定义env目录
     resolve: {
@@ -184,20 +184,21 @@ export default ({ command, mode }) => {
           // 对打包后的文件 自定义目录、路径
           assetFileNames: (assetInfo) => {
             let assetFile = 'static/[ext]/[name].[ext]';
-            const fileNames = assetInfo.names;
-            for (const element of fileNames) {
-              if (element.endsWith('.css')) {
-                assetFile = `lj-css/[name].[ext]`;
-                break;
+            const fileNames = assetInfo.names[0];
+            if (fileNames.endsWith('.css')) {
+              const baseName = fileNames.slice(0, fileNames.indexOf('.css'));
+              assetFile = `components/${baseName}/[name].[ext]`;
+              if (fileNames.includes('index')) {
+                assetFile = `common/css/[name].[ext]`;
               }
             }
             return assetFile;
           },
           chunkFileNames: (chunkInfo) => {
-            return 'lj-common-js/[name].js';
+            return 'common/js/[name].js';
           },
           entryFileNames: (chunkInfo) => {
-            return 'lj-default-js/[name].js';
+            return `components/${chunkInfo.name}/[name].js`;
           },
         },
       },
